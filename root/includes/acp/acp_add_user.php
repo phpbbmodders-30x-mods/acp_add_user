@@ -76,7 +76,7 @@ class acp_add_user
 		// lets create a wacky new password for our user...but only if there is nothing for a password already
 		if (empty($data['new_password']) && empty($data['password_confirm']))
 		{
-			$new_password = str_split(base64_encode(md5(time() . $data['new_username'])), $config['min_pass_chars'] + rand(3, 5));
+			$new_password = str_split(base64_encode(md5(time() . $data['username'])), $config['min_pass_chars'] + rand(3, 5));
 			$data['new_password'] = $data['password_confirm'] = $new_password[0];
 		}
 		
@@ -169,7 +169,7 @@ class acp_add_user
 				}
 				
 				$user_row = array(
-					'username'				=> $data['new_username'],
+					'username'				=> $data['username'],
 					'user_password'			=> phpbb_hash($data['new_password']),
 					'user_email'			=> $data['email'],
 					'group_id'				=> (int) $group_id,
@@ -194,7 +194,7 @@ class acp_add_user
 				}
 				// Register user...
 				$user_id = user_add($user_row, $cp_data);
-				add_log('admin', 'LOG_USER_ADDED', $data['new_username']);
+				add_log('admin', 'LOG_USER_ADDED', $data['username']);
 				
 				// This should not happen, because the required variables are listed above...
 				if ($user_id === false)
@@ -230,7 +230,7 @@ class acp_add_user
 
 					$messenger->template($email_template, $data['lang']);
 
-					$messenger->to($data['email'], $data['new_username']);
+					$messenger->to($data['email'], $data['username']);
 
 					$messenger->headers('X-AntiAbuse: Board servername - ' . $config['server_name']);
 					$messenger->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
@@ -239,7 +239,7 @@ class acp_add_user
 
 					$messenger->assign_vars(array(
 						'WELCOME_MSG'	=> htmlspecialchars_decode(sprintf($user->lang['WELCOME_SUBJECT'], $config['sitename'])),
-						'USERNAME'		=> htmlspecialchars_decode($data['new_username']),
+						'USERNAME'		=> htmlspecialchars_decode($data['username']),
 						'PASSWORD'		=> htmlspecialchars_decode($data['new_password']),
 						'U_ACTIVATE'	=> "$server_url/ucp.$phpEx?mode=activate&u=$user_id&k=$user_actkey")
 					);
@@ -272,7 +272,7 @@ class acp_add_user
 							$messenger->im($row['user_jabber'], $row['username']);
 
 							$messenger->assign_vars(array(
-								'USERNAME'			=> htmlspecialchars_decode($data['new_username']),
+								'USERNAME'			=> htmlspecialchars_decode($data['username']),
 								'U_USER_DETAILS'	=> "$server_url/memberlist.$phpEx?mode=viewprofile&amp;u=$user_id",
 								'U_ACTIVATE'		=> "$server_url/ucp.$phpEx?mode=activate&u=$user_id&k=$user_actkey")
 							);
@@ -346,7 +346,7 @@ class acp_add_user
 		
 		$template->assign_vars(array(
 			'ERROR'				=> (sizeof($error)) ? implode('<br />', $error) : '',
-			'NEW_USERNAME'		=> $data['new_username'],
+			'NEW_USERNAME'		=> $data['username'],
 			'EMAIL'				=> $data['email'],
 			'EMAIL_CONFIRM'		=> $data['email_confirm'],
 			'PASSWORD'			=> $data['new_password'],
