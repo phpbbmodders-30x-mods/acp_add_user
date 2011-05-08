@@ -71,10 +71,10 @@ $versions = array(
 		// and last but not least...add the module
 		'module_add' => array(
 			array('acp', 'ACP_CAT_USERS', array(
-					'module_basename'	=> 'users',
+					'module_basename'	=> 'add_user',
 					'module_enabled'	=> 1,
-					'module_display'	=> 0,					
-					'module_langname'	=> 'ACP_ADD_USER',
+					'module_display'	=> 1,					
+					'module_langname'	=> 'ADD_USER',
 					'module_mode'		=> 'add_user',
 					'module_auth'		=> 'acl_a_add_user',
 				),

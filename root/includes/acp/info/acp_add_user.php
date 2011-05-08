@@ -11,9 +11,6 @@
 *
 */
 
-/**
-* @package module_install
-*/
 class acp_add_user_info
 {	
 	function module()

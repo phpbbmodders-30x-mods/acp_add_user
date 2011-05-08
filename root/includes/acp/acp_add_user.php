@@ -1,20 +1,16 @@
 <?php
 /** 
-*
+* @author Rich McGirr (RMcGirr83) http://phpbbmodders.net
 * @author David Lewis (Highway of Life) http://phpbbacademy.com
 *
 * @package acp
-* @version $Id: acp_add_user.php 31M 2007-08-05 01:09:43Z (local) $
+* @version $Id:
+* @copyright (c) 2011 phpBB Modders
 * @copyright (c) 2007 Star Trek Guide Group 
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
 */
 
-/**
-* acp_add_user
-* New User Registration
-* @package acp
-*/
 class acp_add_user
 {
 	var $u_action;
@@ -26,31 +22,18 @@ class acp_add_user
 
 		include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
-		include($phpbb_root_path . 'includes/acp/info/acp_add_user.' . $phpEx);
 		
 		$submit 		= (isset($_POST['submit'])) ? true : false;
 		$admin_activate = (isset($_POST['activate'])) ? (($config['require_activation'] == USER_ACTIVATION_ADMIN) ? true : false) : false;
 
 		$user->add_lang(array('posting', 'ucp', 'acp/users'));
 
+		add_form_key('acp_add_user');		
+		
 		$cp = new custom_profile();
 
 		$error = $cp_data = $cp_error = array();
 		
-		$version = new acp_add_user_info();
-		
-		$add_user_version = $version->module();
-		$add_user_version = $add_user_version['version'];
-		
-		if (!isset($config['add_user_version']))
-		{
-			$version->install();
-		}
-		else if (version_compare($config['add_user_version'], $add_user_version, '<'))
-		{
-			$version->update();
-		}
-
 		// Try to automatically determine the timezone and daylight savings time settings
 		$timezone = date('Z') / 3600;
 		$is_dst = date('I');
@@ -69,55 +52,91 @@ class acp_add_user
 			$is_dst = $config['board_dst'];
 			$timezone = $config['board_timezone'];
 		}
-		
+			
 		$data = array(
-			'new_username'		=> utf8_normalize_nfc(request_var('username', '', true)),
+			'username'		=> utf8_normalize_nfc(request_var('username', '', true)),
+			'new_password'		=> request_var('new_password', '', true),
+			'password_confirm'	=> request_var('password_confirm', '', true),			
 			'email'				=> strtolower(request_var('email', '')),
 			'email_confirm'		=> strtolower(request_var('email_confirm', '')),
-			'lang'				=> request_var('lang', $user->lang_name),
-			'tz'				=> request_var('tz', (float) $timezone),
-			'bday_day'			=> request_var('bday_day', 0),
-			'bday_month'		=> request_var('bday_month', 0),
-			'bday_year'			=> request_var('bday_year', 0),
+			'lang'				=> basename(request_var('lang', $user->lang_name)),
+			'tz'				=> request_var('tz', (float) $timezone)
 		);
+
+		if ($config['allow_birthdays'])
+		{
+			$data['bday_day'] = $data['bday_month'] = $data['bday_year'] = 0;
+
+			$data['bday_day'] = request_var('bday_day', $data['bday_day']);
+			$data['bday_month'] = request_var('bday_month', $data['bday_month']);
+			$data['bday_year'] = request_var('bday_year', $data['bday_year']);
+			$data['user_birthday'] = sprintf('%2d-%2d-%4d', $data['bday_day'], $data['bday_month'], $data['bday_year']);
+		}
 		
-		// lets create a wacky new password for our user...
-		$new_password = str_split(base64_encode(md5(time() . $data['new_username'])), $config['min_pass_chars'] + rand(3, 5));
-		$data['new_password'] = $new_password[0];
+		// lets create a wacky new password for our user...but only if there is nothing for a password already
+		if (empty($data['new_password']) && empty($data['password_confirm']))
+		{
+			$new_password = str_split(base64_encode(md5(time() . $data['new_username'])), $config['min_pass_chars'] + rand(3, 5));
+			$data['new_password'] = $data['password_confirm'] = $new_password[0];
+		}
 		
 		// Check and initialize some variables if needed
 		if ($submit)
 		{
-			$error = validate_data($data, array(
-				'new_username'			=> array(
+			$validate_array = array(
+				'username'			=> array(
 					array('string', false, $config['min_name_chars'], $config['max_name_chars']),
 					array('username')),
-				'new_password'		=> array(
-					array('string', false, $config['min_pass_chars'], $config['max_pass_chars'])),
 				'email'				=> array(
 					array('string', false, 6, 60),
 					array('email')),
+				'new_password'		=> array(
+					array('string', false, $config['min_pass_chars'], $config['max_pass_chars']),
+					array('password')),
+				'password_confirm'	=> array('string', false, $config['min_pass_chars'], $config['max_pass_chars']),					
 				'email_confirm'		=> array('string', false, 6, 60),
 				'tz'				=> array('num', false, -14, 14),
 				'lang'				=> array('match', false, '#^[a-z_\-]{2,}$#i'),
-				'bday_day'			=> array('num', false, 0, 31),
-				'bday_month'		=> array('num', false, 0, 12),
-				'bday_year'			=> array('num', false, 0, date('Y')),
-			));
+			);
+					
+			if ($config['allow_birthdays'])
+			{
+				$validate_array = array_merge($validate_array, array(
+					'bday_day'		=> array('num', true, 1, 31),
+					'bday_month'	=> array('num', true, 1, 12),
+					'bday_year'		=> array('num', true, 1901, gmdate('Y', time()) + 50),
+					'user_birthday' => array('date', true),
+				));
+			}
 			
-			// Replace "error" strings with their real, localised form
-			$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
+			$error = validate_data($data, $validate_array);
 
 			// validate custom profile fields
 			$cp->submit_cp_field('register', $user->get_iso_lang_id(), $cp_data, $error);
 
+			if (sizeof($cp_error))
+			{
+				$error = array_merge($error, $cp_error);
+			}
+
+			if ($data['new_password'] != $data['password_confirm'])
+			{
+				$error[] = $user->lang['NEW_PASSWORD_ERROR'];
+			}
+
+			if ($data['email'] != $data['email_confirm'])
+			{
+				$error[] = $user->lang['NEW_EMAIL_ERROR'];
+			}			
+			// Replace "error" strings with their real, localised form
+			$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
+			
 			if (!sizeof($error))
 			{
-				if ($data['email'] != $data['email_confirm'])
+				if (!check_form_key('acp_add_user'))
 				{
-					$error[] = $user->lang['NEW_EMAIL_ERROR'];
-				}
-				
+					$error[] = 'FORM_INVALID';
+				}				
 				$server_url = generate_board_url();
 
 				$sql = 'SELECT group_id
@@ -134,16 +153,9 @@ class acp_add_user
 					trigger_error('NO_GROUP');
 				} 
 
-				/**
-				 * @todo Version 2 - have the ability for the Admin to activate instantly regardless of activation type
-				 */
 				if (($config['require_activation'] == USER_ACTIVATION_SELF || $config['require_activation'] == USER_ACTIVATION_ADMIN) && $config['email_enable'] && !$admin_activate)
 				{
-					$user_actkey = gen_rand_string(10);
-					$key_len = 54 - (strlen($server_url));
-					$key_len = ($key_len < 6) ? 6 : $key_len;
-					$user_actkey = substr($user_actkey, 0, $key_len);
-
+					$user_actkey = gen_rand_string(mt_rand(6, 10));
 					$user_type = USER_INACTIVE;
 					$user_inactive_reason = INACTIVE_REGISTER;
 					$user_inactive_time = time();
@@ -158,7 +170,7 @@ class acp_add_user
 				
 				$user_row = array(
 					'username'				=> $data['new_username'],
-					'user_password'			=> md5($data['new_password']),
+					'user_password'			=> phpbb_hash($data['new_password']),
 					'user_email'			=> $data['email'],
 					'group_id'				=> (int) $group_id,
 					'user_timezone'			=> (float) $data['tz'],
@@ -170,25 +182,31 @@ class acp_add_user
 					'user_regdate'			=> time(),
 					'user_inactive_reason'	=> $user_inactive_reason,
 					'user_inactive_time'	=> $user_inactive_time,
-					'user_birthday'			=> $data['bday_day'] . '-' . $data['bday_month'] . '-' . $data['bday_year'],
 				);
-
+				
+				if ($config['new_member_post_limit'])
+				{
+					$user_row['user_new'] = 1;
+				}				
+				if ($config['allow_birthdays'])
+				{
+					$user_row['user_birthday'] = $data['user_birthday'];
+				}
 				// Register user...
 				$user_id = user_add($user_row, $cp_data);
 				add_log('admin', 'LOG_USER_ADDED', $data['new_username']);
 				
-				$message = array();
-
 				// This should not happen, because the required variables are listed above...
 				if ($user_id === false)
 				{
 					trigger_error($user->lang['NO_USER'], E_USER_ERROR);
 				}
 
+				$message = array();
 				if ($config['require_activation'] == USER_ACTIVATION_SELF && $config['email_enable'])
 				{
 					$message[] = $user->lang['ACP_ACCOUNT_INACTIVE'];
-					$email_template = 'user_welcome_inactive';
+					$email_template = 'user_added_inactive';
 				}
 				else if ($config['require_activation'] == USER_ACTIVATION_ADMIN && $config['email_enable'] && !$admin_activate)
 				{
@@ -198,13 +216,15 @@ class acp_add_user
 				else
 				{
 					$message[] = $user->lang['ACP_ACCOUNT_ADDED'];
-					$email_template = 'user_welcome';
+					$email_template = 'user_added_welcome';
 				}
-
 
 				if ($config['email_enable'])
 				{
-					include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+					if (!class_exists('messenger'))
+					{
+						include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+					}
 
 					$messenger = new messenger(false);
 
@@ -263,7 +283,7 @@ class acp_add_user
 					}
 				}
 				
-				$message[] = sprintf($user->lang['CONTINUE_EDIT_USER'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=profile&amp;u=' . $user_id) . '">', $data['new_username'], '</a>');
+				$message[] = sprintf($user->lang['CONTINUE_EDIT_USER'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=profile&amp;u=' . $user_id) . '">', $data['username'], '</a>');
 				$message[] = sprintf($user->lang['EDIT_USER_GROUPS'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=groups&amp;u=' . $user_id) . '">', '</a>');
 				$message[] = adm_back_link($this->u_action);
   				
@@ -289,21 +309,6 @@ class acp_add_user
 		
 		if ($config['allow_birthdays'])
 		{
-			$month_array = array(
-				1 => 'Jan',
-				2 => 'Feb',
-				3 => 'Mar',
-				4 => 'Apr',
-				5 => 'May_short',
-				6 => 'Jun',
-				7 => 'Jul',
-				8 => 'Aug',
-				9 => 'Sep',
-				10 => 'Oct',
-				11 => 'Nov',
-				12 => 'Dec',
-			);
-			
 			$s_birthday_day_options = '<option value="0"' . ((!$data['bday_day']) ? ' selected="selected"' : '') . '>--</option>';
 			for ($i = 1; $i < 32; $i++)
 			{
@@ -311,16 +316,17 @@ class acp_add_user
 				$s_birthday_day_options .= "<option value=\"$i\"$selected>$i</option>";
 			}
 
-	  		$s_birthday_month_options = '<option value="0"' . ((!$data['bday_month']) ? ' selected="selected"' : '') . '>--</option>';
-			foreach ($month_array as $i => $month)
+			$s_birthday_month_options = '<option value="0"' . ((!$data['bday_month']) ? ' selected="selected"' : '') . '>--</option>';
+			for ($i = 1; $i < 13; $i++)
 			{
 				$selected = ($i == $data['bday_month']) ? ' selected="selected"' : '';
-				$s_birthday_month_options .= '<option value="' . $i . '"' . $selected . '>' . $user->lang['datetime'][$month] . "</option>\n";
+				$s_birthday_month_options .= "<option value=\"$i\"$selected>$i</option>";
 			}
+			$s_birthday_year_options = '';
 
 			$now = getdate();
 			$s_birthday_year_options = '<option value="0"' . ((!$data['bday_year']) ? ' selected="selected"' : '') . '>--</option>';
-			for ($i = $now['year'] - 100; $i < $now['year']; $i++)
+			for ($i = $now['year'] - 100; $i <= $now['year']; $i++)
 			{
 				$selected = ($i == $data['bday_year']) ? ' selected="selected"' : '';
 				$s_birthday_year_options .= "<option value=\"$i\"$selected>$i</option>";
@@ -335,11 +341,16 @@ class acp_add_user
 			));
 		}
 		
+		$string = ((!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['TRANSLATION_INFO'] . '<br />' : '')  . $user->lang['ACP_ADD_USER'] .' '. base64_decode('JmNvcHk7IDxhIGhyZWY9Imh0dHA6Ly9waHBiYm1vZGRlcnMubmV0Ij5waHBCQiBNb2RkZXJzPC9hPiA=');
+		$user->lang['TRANSLATION_INFO'] = $string;		
+		
 		$template->assign_vars(array(
 			'ERROR'				=> (sizeof($error)) ? implode('<br />', $error) : '',
 			'NEW_USERNAME'		=> $data['new_username'],
 			'EMAIL'				=> $data['email'],
 			'EMAIL_CONFIRM'		=> $data['email_confirm'],
+			'PASSWORD'			=> $data['new_password'],
+			'PASSWORD_CONFIRM'	=> $data['password_confirm'],			
 
 			'L_CONFIRM_EXPLAIN'	=> sprintf($user->lang['CONFIRM_EXPLAIN'], '<a href="mailto:' . htmlspecialchars($config['board_contact']) . '">', '</a>'),
 			'L_USERNAME_EXPLAIN'=> sprintf($user->lang[$config['allow_name_chars'] . '_EXPLAIN'], $config['min_name_chars'], $config['max_name_chars']),
