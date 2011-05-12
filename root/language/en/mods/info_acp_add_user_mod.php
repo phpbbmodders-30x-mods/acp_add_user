@@ -7,9 +7,17 @@
 * @version $Id:
 * @copyright (c) 2011 phpBB Modders
 * @copyright (c) 2007 Star Trek Guide Group
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
+
+/**
+* @ignore
+*/
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
 
 /**
 * DO NOT CHANGE
@@ -39,13 +47,13 @@ $lang = array_merge($lang, array(
 	'ACP_ADMIN_ACTIVATE'		=> 'An email will be dispatched to an Administrator for account activation, alternatively you may check the activate account box below to activate the account instantly once created. The user will receive an email containing account login details.',
 	'ACP_EMAIL_ACTIVATE'		=> 'Once the account has been created, The user will receive an email containing an activation link to activate the account.',
 	'ACP_INSTANT_ACTIVATE'		=> 'The Account will be activated instantly. The user will recieve an email with account login details.',
-	
+
 	'ADD_USER'					=> 'Add User',
 	'ADD_USER_EXPLAIN'			=> 'Create a new user account. If your activation settings are to Admin Activativation only, you will have the option to activate the user instantly.',
 	'ADMIN_ACTIVATE'			=> 'Activate user account',
 	'CONFIRM_PASSWORD'			=> 'Confirm password',
 	'EDIT_USER_GROUPS'			=> '%sClick here to edit the usergroups for this user%s',
-	
+
 	'CONTINUE_EDIT_USER'		=> '%1$sClick here to the manage %2$s’s profile%3$s', // e.g.: Click here to edit Joe’s profile.
 	'LOG_USER_ADDED'			=> '<strong>New user created</strong><br />» %s',
 	'PASSWORD'					=> 'Password',
