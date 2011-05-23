@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'ACP_ACCOUNT_INACTIVE_ADMIN'=> 'The account has been created. However, the forum settings require account activation by an administrator.<br />An email has been sent to the Administrators and the user will be informed when their account has been activated',
 	'ACP_ADD_USER'				=> 'ACP Add User Mod',
 	'ACP_ADMIN_ACTIVATE'		=> 'An email will be dispatched to an Administrator for account activation, alternatively you may check the activate account box below to activate the account instantly once created. The user will receive an email containing account login details.',
-	'ACP_EMAIL_ACTIVATE'		=> 'Once the account has been created, The user will receive an email containing an activation link to activate the account.',
+	'ACP_EMAIL_ACTIVATE'		=> 'Once the account has been created, the user will receive an email containing an activation link to activate the account.',
 	'ACP_INSTANT_ACTIVATE'		=> 'The Account will be activated instantly. The user will recieve an email with account login details.',
 
 	'ADD_USER'					=> 'Add User',
