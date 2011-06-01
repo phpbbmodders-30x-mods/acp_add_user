@@ -8,7 +8,7 @@
 * @version $Id:
 * @copyright (c) 2011 phpBB Modders
 * @copyright (c) 2007 Star Trek Guide Group
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 //-->
@@ -17,7 +17,7 @@
 	<p>{L_ADD_USER_EXPLAIN}</p>
 
 	<form id="register" method="post" action="{U_ACTION}">
-	
+
 <!-- IF ERROR -->
 	<div class="errorbox"><h3>{L_WARNING}</h3>
 		<p>{ERROR}</p>
@@ -26,7 +26,7 @@
 
 <fieldset>
 	<legend>{L_REGISTRATION}</legend>
-	<p><span>{L_REG_COND}</span></p>
+	<p>{L_REG_COND}</p>
 	<dl>
 		<dt><label for="username">{L_USERNAME}:</label>
 			<br /><span>{L_USERNAME_EXPLAIN}</span></dt>
@@ -57,7 +57,7 @@
 		<dd><select name="tz" id="tz">{S_TZ_OPTIONS}</select></dd>
 	</dl>
 	<!-- IF S_BIRTHDAYS_ENABLED -->
-	<dl> 
+	<dl>
 		<dt><label for="birthday">{L_BIRTHDAY}:</label><br /><span>{L_BIRTHDAY_EXPLAIN}</span></dt>
 		<dd>{L_DAY}: <select id="birthday" name="bday_day">{S_BIRTHDAY_DAY_OPTIONS}</select> {L_MONTH}: <select name="bday_month">{S_BIRTHDAY_MONTH_OPTIONS}</select> {L_YEAR}: <select name="bday_year">{S_BIRTHDAY_YEAR_OPTIONS}</select></dd>
 	</dl>
@@ -72,12 +72,12 @@
 
 	<!-- IF .profile_fields -->
 		<fieldset>
-			<legend>{L_USER_CUSTOM_PROFILE_FIELDS}</legend>		
+			<legend>{L_USER_CUSTOM_PROFILE_FIELDS}</legend>
 		<dl>
 			<dt><label>{L_ITEMS_REQUIRED}</label></dt>
-		</dl>			
+		</dl>
 		<!-- BEGIN profile_fields -->
-		<dl> 
+		<dl>
 			<dt><label<!-- IF profile_fields.FIELD_ID --> for="{profile_fields.FIELD_ID}"<!-- ENDIF -->>{profile_fields.LANG_NAME}:<!-- IF profile_fields.S_REQUIRED --> *<!-- ENDIF --></label>
 			<!-- IF profile_fields.LANG_EXPLAIN --><br /><span>{profile_fields.LANG_EXPLAIN}</span><!-- ENDIF -->
 			<!-- IF profile_fields.ERROR --><br /><span class="error">{profile_fields.ERROR}</span><!-- ENDIF --></dt>
