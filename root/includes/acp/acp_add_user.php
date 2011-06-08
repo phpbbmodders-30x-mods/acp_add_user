@@ -94,7 +94,7 @@ class acp_add_user
 			$validate_array = array(
 				'username'			=> array(
 					array('string', false, $config['min_name_chars'], $config['max_name_chars']),
-					array('username')),
+					array('username', '')),
 				'email'				=> array(
 					array('string', false, 6, 60),
 					array('email')),
