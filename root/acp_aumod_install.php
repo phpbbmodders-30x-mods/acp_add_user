@@ -85,6 +85,10 @@ $versions = array(
 	'1.1.0'	=> array(
 		// Nothing changed in this version.
 	),
+	// Version 1.1.1
+	'1.1.1'	=> array(
+		// Nothing changed in this version.
+	),	
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.

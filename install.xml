@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
 	<header>
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
     <title lang="en">ACP Add User MOD</title>
@@ -32,13 +32,22 @@ Gives the administrator the ability to instantly approve a new member after crea
 		</contributions-group>	
       </author>
     </author-group>
-	<mod-version>1.1.0</mod-version>
+	<mod-version>1.1.1</mod-version>
 	<installation>
 		<level>easy</level>
 		<time>300</time>
-		<target-version>3.0.8</target-version>
+		<target-version>3.0.12</target-version>
 	</installation>
     <history>
+      <entry>
+        <date>2013-11-17</date>
+        <rev-version>1.1.1</rev-version>
+        <changelog lang="en">
+          <change>UMIl Update</change>
+		  <change>phpBB version update</change>
+		  <change>Allow user to be added to groups</change>
+        </changelog>
+      </entry>	
       <entry>
         <date>2011-04-27</date>
 		<rev-version>1.1.0</rev-version>

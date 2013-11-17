@@ -50,6 +50,7 @@ $lang = array_merge($lang, array(
 
 	'ADD_USER'					=> 'Add User',
 	'ADD_USER_EXPLAIN'			=> 'Create a new user account. If your activation settings are to Admin Activativation only, you will have the option to activate the user instantly.',
+	'MOD_VERSION'				=> 'Version %s',
 	'ADMIN_ACTIVATE'			=> 'Activate user account',
 	'CONFIRM_PASSWORD'			=> 'Confirm password',
 	'EDIT_USER_GROUPS'			=> '%sClick here to edit the usergroups for this user%s',

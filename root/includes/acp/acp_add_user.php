@@ -367,6 +367,7 @@ class acp_add_user
 			'L_REG_COND'		=> $l_reg_cond,
 			'S_TZ_OPTIONS'		=> tz_select($data['tz']),
 			'U_ACTION'			=> $this->u_action,
+			'L_MOD_VERSION'		=> sprintf($user->lang['MOD_VERSION'] , $config['add_user_version']),
 
 			'S_ADMIN_ACTIVATE'			=> ($config['require_activation'] == USER_ACTIVATION_ADMIN) ? true : false,
 			'U_ADMIN_ACTIVATE'			=> ($admin_activate) ? ' checked="checked"' : '',
