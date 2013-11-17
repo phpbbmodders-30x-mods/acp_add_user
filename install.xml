@@ -45,7 +45,6 @@ Gives the administrator the ability to instantly approve a new member after crea
         <changelog lang="en">
           <change>UMIl Update</change>
 		  <change>phpBB version update</change>
-		  <change>Allow user to be added to groups</change>
         </changelog>
       </entry>	
       <entry>
