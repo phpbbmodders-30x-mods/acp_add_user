@@ -2,7 +2,7 @@
 
 /**
 *
-* @author RMcGirr83 (Rich McGirr) rmcgirr83@gmail.com 
+* @author RMcGirr83 (Rich McGirr) rmcgirr83@gmail.com
 * @package ACP Add User Mod
 * @version $Id acp_aumod_install.php
 * @copyright (c) 2010 RMcGirr83 ( http://www.phpbbmodders.net/ )
@@ -59,7 +59,7 @@ $version_config_name = 'add_user_version';
 */
 $versions = array(
 	// Version 1.0.0
-	'1.0.1'	=> array(		
+	'1.0.1'	=> array(
 		// Add a permission settings
 		'permission_add' => array(
 			array('a_add_user'),
@@ -73,14 +73,14 @@ $versions = array(
 			array('acp', 'ACP_CAT_USERS', array(
 					'module_basename'	=> 'add_user',
 					'module_enabled'	=> 1,
-					'module_display'	=> 1,					
+					'module_display'	=> 1,
 					'module_langname'	=> 'ADD_USER',
 					'module_mode'		=> 'add_user',
 					'module_auth'		=> 'acl_a_add_user',
 				),
 			),
-		),		
-	),	
+		),
+	),
 	// Version 1.1.0
 	'1.1.0'	=> array(
 		// Nothing changed in this version.
@@ -88,7 +88,11 @@ $versions = array(
 	// Version 1.1.1
 	'1.1.1'	=> array(
 		// Nothing changed in this version.
-	),	
+	),
+	// Version 1.1.2
+	'1.1.2'	=> array(
+		// Nothing changed in this version.
+	),
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.

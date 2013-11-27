@@ -21,7 +21,7 @@ Gives the administrator the ability to instantly approve a new member after crea
         <realname>Rich McGirr</realname>
         <homepage>http://phpbbmodders.net</homepage>
 		<contributions />
-      </author>	
+      </author>
       <author>
         <username>Highway of Life</username>
         <realname>David Lewis</realname>
@@ -29,10 +29,10 @@ Gives the administrator the ability to instantly approve a new member after crea
         <email>highwayoflife@gmail.com</email>
 		<contributions-group>
 		  <contributions status="past" from="2007-09-15" to="2011-04-27" position="Developer"/>
-		</contributions-group>	
+		</contributions-group>
       </author>
     </author-group>
-	<mod-version>1.1.1</mod-version>
+	<mod-version>1.1.2</mod-version>
 	<installation>
 		<level>easy</level>
 		<time>300</time>
@@ -40,13 +40,20 @@ Gives the administrator the ability to instantly approve a new member after crea
 	</installation>
     <history>
       <entry>
+        <date>2013-11-27</date>
+        <rev-version>1.1.2</rev-version>
+        <changelog lang="en">
+          <change>Removed L_CONFIRM_EXPLAIN since it contained htmlspecialchars() and was not used anyway.</change>
+        </changelog>
+      </entry>
+      <entry>
         <date>2013-11-17</date>
         <rev-version>1.1.1</rev-version>
         <changelog lang="en">
           <change>UMIl Update</change>
 		  <change>phpBB version update</change>
         </changelog>
-      </entry>	
+      </entry>
       <entry>
         <date>2011-04-27</date>
 		<rev-version>1.1.0</rev-version>
@@ -54,7 +61,7 @@ Gives the administrator the ability to instantly approve a new member after crea
           <change>UMIL</change>
           <change>Code changes and password choices</change>
         </changelog>
-      </entry>	
+      </entry>
       <entry>
         <date>2007-08-04</date>
 		<rev-version>1.0.1</rev-version>
@@ -81,8 +88,8 @@ Gives the administrator the ability to instantly approve a new member after crea
 	<php-installer><![CDATA[acp_aumod_install.php]]></php-installer>
 <diy-instructions lang="en"><![CDATA[1. Browse to the file acp_aumod_install.php in the root of your forum to make the database changes (eg, http://mysite.com/acp_aumod_install.php).
 2. Delete the acp_aumod_install.php file from the root of your forum.
-3. Purge the cache in the ACP.  
-4. New menu item will appear within the User Management tab of the ACP.  
+3. Purge the cache in the ACP.
+4. New menu item will appear within the User Management tab of the ACP.
 5. Enjoy the Mod!!
 ]]></diy-instructions>
   </action-group>
