@@ -56,10 +56,6 @@
 		<dt><label for="tz">{L_TIMEZONE}:</label></dt>
 		<dd><select name="tz" id="tz">{S_TZ_OPTIONS}</select></dd>
 	</dl>
-	<dl>
-		<dt><label for="group">{L_GROUPS}:</label><br /><span>{L_USER_GROUP_ADD}</span></dt>
-		<dd>{S_GROUP_OPTIONS}</dd>
-	</dl>	
 	<!-- IF S_BIRTHDAYS_ENABLED -->
 	<dl>
 		<dt><label for="birthday">{L_BIRTHDAY}:</label><br /><span>{L_BIRTHDAY_EXPLAIN}</span></dt>

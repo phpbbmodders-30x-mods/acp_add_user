@@ -25,7 +25,7 @@ class acp_add_user
 
 	function main($id, $mode)
 	{
-		global $config, $db, $user, $auth, $template, $cache;
+		global $config, $db, $user, $auth, $template;
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx;
 
 		include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
@@ -34,7 +34,7 @@ class acp_add_user
 		$submit 		= (isset($_POST['submit'])) ? true : false;
 		$admin_activate = (isset($_POST['activate'])) ? (($config['require_activation'] == USER_ACTIVATION_ADMIN) ? true : false) : false;
 
-		$user->add_lang(array('posting', 'ucp', 'acp/users', 'acp/groups'));
+		$user->add_lang(array('posting', 'ucp', 'acp/users'));
 
 		add_form_key('acp_add_user');
 
@@ -68,8 +68,7 @@ class acp_add_user
 			'email'				=> strtolower(request_var('email', '')),
 			'email_confirm'		=> strtolower(request_var('email_confirm', '')),
 			'lang'				=> basename(request_var('lang', $user->lang_name)),
-			'tz'				=> request_var('tz', (float) $timezone),
-			'group' 			=> request_var('group', 0),
+			'tz'				=> request_var('tz', (float) $timezone)
 		);
 
 		if ($config['allow_birthdays'])
@@ -203,10 +202,6 @@ class acp_add_user
 				}
 				// Register user...
 				$user_id = user_add($user_row, $cp_data);
-				if (!empty($data['group']))
-				{
-					group_user_add($data['group'],$user_id);
-				}
 				add_log('admin', 'LOG_USER_ADDED', $data['username']);
 
 				// This should not happen, because the required variables are listed above...
@@ -357,26 +352,6 @@ class acp_add_user
 		$string = ((!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['TRANSLATION_INFO'] . '<br />' : '')  . $user->lang['ACP_ADD_USER'] .' '. base64_decode('JmNvcHk7IDxhIGhyZWY9Imh0dHA6Ly9waHBiYm1vZGRlcnMubmV0Ij5waHBCQiBNb2RkZXJzPC9hPiA=');
 		$user->lang['TRANSLATION_INFO'] = $string;
 
-		// Get the groups, so that the user can be added to them
-		$ignore_groups = array('BOTS', 'ANONYMOUS', 'REGISTERED', 'NEWLY_REGISTERED');
-		$sql = 'SELECT group_name, group_id, group_type
-			FROM ' . GROUPS_TABLE . '
-			WHERE ' . $db->sql_in_set('group_name', $ignore_groups, true) . '
-			ORDER BY group_type DESC, group_name ASC';
-		$result = $db->sql_query($sql);
-
-		$s_group_options = '';
-		$s_group_options .= '<select name="group"><option value="0" select="selected">' . $user->lang['NO_GROUP'] . '</option>';
-		while ($row = $db->sql_fetchrow($result))
-		{
-			if (!$config['coppa_enable'] && $row['group_name'] == 'REGISTERED_COPPA')
-			{
-				continue;
-			}
-			$s_group_options .= '<option' . (($row['group_type'] == GROUP_SPECIAL) ? ' class="sep"' : '') . ' value="' . $row['group_id'] . '">' . (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) . '</option>';
-		}
-		$db->sql_freeresult($result);			
-		$s_group_options .='</select>';		
 		$template->assign_vars(array(
 			'ERROR'				=> (sizeof($error)) ? implode('<br />', $error) : '',
 			'NEW_USERNAME'		=> $data['username'],
@@ -384,14 +359,12 @@ class acp_add_user
 			'EMAIL_CONFIRM'		=> $data['email_confirm'],
 			'PASSWORD'			=> $data['new_password'],
 			'PASSWORD_CONFIRM'	=> $data['password_confirm'],
-			'L_PASSWORD_EXPLAIN'		=> $user->lang['PASSWORD_EXPLAIN'] . '<br />' . sprintf($user->lang[$config['pass_complex'] . '_EXPLAIN'], $config['min_pass_chars'], $config['max_pass_chars']),
 
 			'L_USERNAME_EXPLAIN'=> sprintf($user->lang[$config['allow_name_chars'] . '_EXPLAIN'], $config['min_name_chars'], $config['max_name_chars']),
 
 			'S_LANG_OPTIONS'	=> language_select($data['lang']),
 			'L_REG_COND'		=> $l_reg_cond,
 			'S_TZ_OPTIONS'		=> tz_select($data['tz']),
-			'S_GROUP_OPTIONS'		=> $s_group_options,
 			'U_ACTION'			=> $this->u_action,
 			'L_MOD_VERSION'		=> sprintf($user->lang['MOD_VERSION'] , $config['add_user_version']),
 

@@ -5,7 +5,7 @@
 * @author RMcGirr83 (Rich McGirr) rmcgirr83@gmail.com
 * @package ACP Add User Mod
 * @version $Id acp_aumod_install.php
-* @copyright (c) 2010 RMcGirr83 ( http://www.phpbbmodders.net/ )
+* @copyright (c) 2014 RMcGirr83 ( http://www.phpbbmodders.net/ )
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -93,6 +93,10 @@ $versions = array(
 	'1.1.2'	=> array(
 		// Nothing changed in this version.
 	),
+	// Version 1.1.3
+	'1.1.3'	=> array(
+		// Nothing changed in this version.
+	),	
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
