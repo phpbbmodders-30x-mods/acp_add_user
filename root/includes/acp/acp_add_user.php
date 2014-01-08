@@ -82,16 +82,29 @@ class acp_add_user
 			$data['user_birthday'] = sprintf('%2d-%2d-%4d', $data['bday_day'], $data['bday_month'], $data['bday_year']);
 		}
 
-		// lets create a wacky new password for our user...but only if there is nothing for a password already
-		if (empty($data['new_password']) && empty($data['password_confirm']))
-		{
-			$new_password = str_split(base64_encode(md5(time() . $data['username'])), $config['min_pass_chars'] + rand(3, 5));
-			$data['new_password'] = $data['password_confirm'] = $new_password[0];
-		}
-
 		// Check and initialize some variables if needed
 		if ($submit)
 		{
+		// lets create a wacky new password for our user...but only if there is nothing for a password already
+		if (empty($data['new_password']) && empty($data['password_confirm']))
+		{
+				if ($config['pass_complex'] == 'PASS_TYPE_ANY' || $config['pass_complex'] == 'PASS_TYPE_CASE')
+				{
+			$new_password = str_split(base64_encode(md5(time() . $data['username'])), $config['min_pass_chars'] + rand(3, 5));
+			$data['new_password'] = $data['password_confirm'] = $new_password[0];
+		}
+				elseif ($config['pass_complex'] == 'PASS_TYPE_ALPHA')
+				{
+					$new_password = generate_password($config['min_pass_chars'] + rand(3, 5), 'PASS_TYPE_ALPHA');
+					$data['new_password'] = $data['password_confirm'] = $new_password;
+				}
+				else
+				{
+					$new_password = generate_password($config['min_pass_chars'] + rand(3, 5), 'PASS_TYPE_SYMBOL');
+					$data['new_password'] = $data['password_confirm'] = $new_password;
+				}
+
+			}		
 			$validate_array = array(
 				'username'			=> array(
 					array('string', false, $config['min_name_chars'], $config['max_name_chars']),
@@ -409,5 +422,40 @@ class acp_add_user
 		$this->page_title = 'ACP_ADD_USER';
 	}
 }
+//a function to generate passwords
+function generate_password($length, $type) 
+{
+	$lowercase = "abcdefghijklmnopqrstuvwxyz";
+	$uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	$numbers = "1234567890";
+	$specialcharacters = "{}[];:,./<>?_+~!@#";
 
+	$pword_string = '';
+	//mt_srand(crc32(microtime()));
+	$max = strlen($lowercase) - 1;
+	for ($x = 0; $x < abs($length/3); $x++) 
+	{
+		$pword_string .= $lowercase{mt_rand(0, $max)};
+	}
+	$max = strlen($uppercase) - 1;
+	for ($x = 0; $x < abs($length/3); $x++) 
+	{
+		$pword_string .= $uppercase{mt_rand(0, $max)};
+	}
+	$max = strlen($numbers) - 1;
+	for ($x = 0; $x < abs($length/3); $x++) 
+	{
+		$pword_string .= $numbers{mt_rand(0, $max)};
+	}
+	if ($type == 'PASS_TYPE_SYMBOL')
+	{
+		$max = strlen($specialcharacters) - 1;
+		for ($x = 0; $x < abs($length/3); $x++) 
+		{
+			$pword_string .= $specialcharacters{mt_rand(0, $max)};
+		}		
+	}
+
+	return str_shuffle($pword_string);
+}
 ?>

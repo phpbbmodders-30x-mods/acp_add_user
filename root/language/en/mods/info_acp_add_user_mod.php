@@ -54,6 +54,7 @@ $lang = array_merge($lang, array(
 	'ADMIN_ACTIVATE'			=> 'Activate user account',
 	'CONFIRM_PASSWORD'			=> 'Confirm password',
 	'EDIT_USER_GROUPS'			=> '%sClick here to edit the usergroups for this user%s',
+	'GROUP_ADD'					=> 'Making a selection here will add the user to the group selected as well as to the registered users group',
 
 	'CONTINUE_EDIT_USER'		=> '%1$sClick here to the manage %2$s’s profile%3$s', // e.g.: Click here to edit Joe’s profile.
 	'LOG_USER_ADDED'			=> '<strong>New user created</strong><br />» %s',
