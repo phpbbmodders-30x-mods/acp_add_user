@@ -20,7 +20,7 @@ class acp_add_user_info
 			'title'		=> 'ACP_ADD_USER',
 			'version'	=> '1.1.0',
 			'modes'		=> array(
-				'add_user'	=> array('title' => 'ACP_ADD_USER', 'auth' => 'acl_a_user', 'cat' => array('ACP_CAT_USERS'),
+				'add_user'	=> array('title' => 'ACP_ADD_USER', 'auth' => 'acl_a_add_user', 'cat' => array('ACP_CAT_USERS'),
 				),
 			),
 		);
